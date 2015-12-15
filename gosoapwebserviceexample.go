@@ -63,8 +63,6 @@ func queryWeatherForZip(postalCode string) (*WeatherInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	//	sContents := string(contents)
-	//	log.Println(sContents)
 	m, _ := mxj.NewMapXml(contents, true)
 	return convertResults(&m)
 }
@@ -73,7 +71,6 @@ func generateRequestContent(postalCode string) string {
 	type QueryData struct {
 		PostalCode string 
 	}	
-
 	const getTemplate = `<?xml version="1.0" encoding="utf-8"?>
 	<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	  <soap:Body>
@@ -102,13 +99,11 @@ func convertResults(soapResponse *mxj.Map) (*WeatherInfo, error) {
 		errorMessage, _ := soapResponse.ValueForPath("Envelope.Body.GetCityWeatherByZIPResponse.GetCityWeatherByZIPResult.ResponseText")
 		return nil, errors.New("Error Respose " + errorMessage.(string))
 	}
-
 	weatherResult, err := soapResponse.ValueForPath("Envelope.Body.GetCityWeatherByZIPResponse.GetCityWeatherByZIPResult")
 	if err != nil {
 		return nil, err
 	}
 	var result WeatherInfo
-
 	config := &mapstructure.DecoderConfig{
 		WeaklyTypedInput: true,
 		Result:           &result,
